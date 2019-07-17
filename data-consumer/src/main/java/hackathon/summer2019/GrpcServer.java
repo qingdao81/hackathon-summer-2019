@@ -16,11 +16,14 @@ public class GrpcServer {
   private static final Counter GRPC_REQUESTS = Counter.build()
       .name("grpc_requests_total").help("Grpc total requests.").register();
 
-  public GrpcServer(int port, Processor processor) throws IOException {
+  private int method = -1;
+
+  public GrpcServer(int port, Processor processor, int method) throws IOException {
     ServerBuilder.forPort(port)
-        .addService(new DataServiceImpl(processor))
+        .addService(new DataServiceImpl(processor, method))
         .build()
         .start();
+    this.method = method;
     LOGGER.info("Grpc server started, listening on " + port);
   }
 
@@ -28,13 +31,16 @@ public class GrpcServer {
 
     private final Processor processor;
 
-    public DataServiceImpl(Processor processor) {
+    private final int method;
+
+    public DataServiceImpl(Processor processor, int method) {
       this.processor = processor;
+      this.method = method;
     }
 
     @Override
     public void sendData(DataRequest request, StreamObserver<DataResponse> responseObserver) {
-      processor.processData(request.getData());
+      processor.processData(request.getData(), method);
       DataResponse response = DataResponse.newBuilder().setMessage("done").build();
       responseObserver.onNext(response);
       responseObserver.onCompleted();

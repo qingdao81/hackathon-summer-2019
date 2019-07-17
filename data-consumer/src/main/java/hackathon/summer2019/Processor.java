@@ -69,13 +69,15 @@ public class Processor {
     }
   }
 
-  public void processData(String data) {
+  public void processData(String data, int method) {
 
-    processObjectifyStringRequest(data);
-
-    processAESRequest(data);
-
-    processStreaming(data);
+    if(method == Consumer.METHOD_STRINGIFY){
+      processObjectifyStringRequest(data);
+    } else if (method == Consumer.METHOD_STREAMING){
+      processStreaming(data);
+    } else if(method == Consumer.METHOD_CRYPTO){
+      processAESRequest(data);
+    }    
   }
 
   private void useAES(String data) throws Exception{
