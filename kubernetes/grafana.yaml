@@ -62,7 +62,7 @@ data:
               "datasource": "prometheus",
               "fill": 1,
               "gridPos": {
-                "h": 8,
+                "h": 7,
                 "w": 21,
                 "x": 0,
                 "y": 0
@@ -148,12 +148,12 @@ data:
               "datasource": "prometheus",
               "fill": 1,
               "gridPos": {
-                "h": 9,
-                "w": 7,
+                "h": 6,
+                "w": 21,
                 "x": 0,
-                "y": 8
+                "y": 7
               },
-              "id": 2,
+              "id": 4,
               "legend": {
                 "avg": false,
                 "current": false,
@@ -178,8 +178,9 @@ data:
               "steppedLine": false,
               "targets": [
                 {
-                  "expr": "grpc_requests_total",
+                  "expr": "objectify_String_Histogram_seconds_sum / objectify_String_Histogram_seconds_count >= 0",
                   "format": "time_series",
+                  "interval": "",
                   "intervalFactor": 1,
                   "legendFormat": "{{job}}",
                   "refId": "A"
@@ -189,7 +190,7 @@ data:
               "timeFrom": null,
               "timeRegions": [],
               "timeShift": null,
-              "title": "GRPC requests",
+              "title": "objectify_string Average Seconds / Method-Call",
               "tooltip": {
                 "shared": true,
                 "sort": 0,
@@ -234,10 +235,10 @@ data:
               "datasource": "prometheus",
               "fill": 1,
               "gridPos": {
-                "h": 9,
-                "w": 7,
-                "x": 7,
-                "y": 8
+                "h": 7,
+                "w": 21,
+                "x": 0,
+                "y": 13
               },
               "id": 6,
               "legend": {
@@ -323,10 +324,10 @@ data:
               "gridPos": {
                 "h": 9,
                 "w": 7,
-                "x": 14,
-                "y": 8
+                "x": 0,
+                "y": 20
               },
-              "id": 4,
+              "id": 2,
               "legend": {
                 "avg": false,
                 "current": false,
@@ -351,9 +352,8 @@ data:
               "steppedLine": false,
               "targets": [
                 {
-                  "expr": "objectify_String_Histogram_seconds_sum / objectify_String_Histogram_seconds_count >= 0",
+                  "expr": "grpc_requests_total",
                   "format": "time_series",
-                  "interval": "",
                   "intervalFactor": 1,
                   "legendFormat": "{{job}}",
                   "refId": "A"
@@ -363,7 +363,7 @@ data:
               "timeFrom": null,
               "timeRegions": [],
               "timeShift": null,
-              "title": "objectify_string Average Seconds / Method-Call",
+              "title": "GRPC requests",
               "tooltip": {
                 "shared": true,
                 "sort": 0,
