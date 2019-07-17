@@ -16,15 +16,24 @@ data:
 
     rule_files:
     scrape_configs:
-    # 8888 jmx prometheus port, 9999 node prometheus port
-      - job_name: 'data-consumer-graalvm'
-        #scrape_timeout: 25s
-        #scrape_interval: 30s
+      - job_name: 'data-consumer-graalvm-objectify'
         static_configs:
-        - targets: ['data-consumer-graalvm.graal.svc.cluster.local:9999']
-      - job_name: 'data-consumer-jvm'
+        - targets: ['data-consumer-graalvm-objectify.graal.svc.cluster.local:9999']
+      - job_name: 'data-consumer-graalvm-streaming'
         static_configs:
-        - targets: ['data-consumer-jvm.graal.svc.cluster.local:9999']
+        - targets: ['data-consumer-graalvm-streaming.graal.svc.cluster.local:9999']
+      - job_name: 'data-consumer-graalvm-decryption'
+        static_configs:
+        - targets: ['data-consumer-graalvm-decryption.graal.svc.cluster.local:9999']
+      - job_name: 'data-consumer-jvm-objectify'
+        static_configs:
+        - targets: ['data-consumer-jvm-objectify.graal.svc.cluster.local:9999']
+      - job_name: 'data-consumer-jvm-streaming'
+        static_configs:
+        - targets: ['data-consumer-jvm-streaming.graal.svc.cluster.local:9999']
+      - job_name: 'data-consumer-jvm-decryption'
+        static_configs:
+        - targets: ['data-consumer-jvm-decryption.graal.svc.cluster.local:9999']
 kind: ConfigMap
 metadata:
   name: prometheus-configmap

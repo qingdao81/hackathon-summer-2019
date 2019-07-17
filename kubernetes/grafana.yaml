@@ -92,7 +92,7 @@ data:
               "steppedLine": false,
               "targets": [
                 {
-                  "expr": "streaming_Histogram_seconds_sum / streaming_Histogram_seconds_count",
+                  "expr": "streaming_Histogram_seconds_sum / streaming_Histogram_seconds_count >= 0",
                   "format": "time_series",
                   "intervalFactor": 1,
                   "legendFormat": "{{job}}",
@@ -264,7 +264,7 @@ data:
               "steppedLine": false,
               "targets": [
                 {
-                  "expr": "useAES_Duration_Histogram_seconds_sum / useAES_Duration_Histogram_seconds_count",
+                  "expr": "useAES_Duration_Histogram_seconds_sum / useAES_Duration_Histogram_seconds_count >= 0",
                   "format": "time_series",
                   "interval": "",
                   "intervalFactor": 1,
@@ -351,7 +351,7 @@ data:
               "steppedLine": false,
               "targets": [
                 {
-                  "expr": "objectify_String_Histogram_seconds_sum / objectify_String_Histogram_seconds_count",
+                  "expr": "objectify_String_Histogram_seconds_sum / objectify_String_Histogram_seconds_count >= 0",
                   "format": "time_series",
                   "interval": "",
                   "intervalFactor": 1,
@@ -401,6 +401,7 @@ data:
               }
             }
           ],
+          "refresh": "5s",
           "schemaVersion": 18,
           "style": "dark",
           "tags": [],

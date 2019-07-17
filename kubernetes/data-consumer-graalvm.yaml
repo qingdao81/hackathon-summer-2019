@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: data-consumer-graalvm
+  name: data-consumer-graalvm-objectify
 spec:
   type: ClusterIP
   ports:
@@ -10,23 +10,23 @@ spec:
   - name: grpc
     port: 50051
   selector:
-    app: data-consumer-graalvm
+    app: data-consumer-graalvm-objectify
 
 ---
 
 apiVersion: apps/v1beta2
 kind: Deployment
 metadata:
-  name: data-consumer-graalvm
+  name: data-consumer-graalvm-objectify
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: data-consumer-graalvm
+      app: data-consumer-graalvm-objectify
   template:
     metadata:
       labels:
-        app: data-consumer-graalvm
+        app: data-consumer-graalvm-objectify
     spec:
       affinity:
         nodeAffinity:
@@ -40,10 +40,126 @@ spec:
       securityContext:
         runAsUser: 65534
       containers:
-      - name: data-consumer-graalvm
+      - name: data-consumer-graalvm-objectify
         image: "wharf.gaikai.org/lbachmann/hackathon-data-consumer-alpine-graalvm:0.0.1"
         command: ["java"]
-        args: ["-jar", "-Xmx1024m", "/tmp/data-consumer.jar"]
+        args: ["-jar", "-Xmx1024m", "/tmp/data-consumer.jar", "1"]
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 9999
+        - containerPort: 50051
+        resources:
+          limits:
+            cpu: 2
+            memory: 1Gi
+      restartPolicy: Always
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: data-consumer-graalvm-streaming
+spec:
+  type: ClusterIP
+  ports:
+  - name: prometheus
+    port: 9999
+  - name: grpc
+    port: 50051
+  selector:
+    app: data-consumer-graalvm-streaming
+
+---
+
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: data-consumer-graalvm-streaming
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: data-consumer-graalvm-streaming
+  template:
+    metadata:
+      labels:
+        app: data-consumer-graalvm-streaming
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: hardened
+                operator: NotIn
+                values:
+                - "true"
+      securityContext:
+        runAsUser: 65534
+      containers:
+      - name: data-consumer-graalvm-streaming
+        image: "wharf.gaikai.org/lbachmann/hackathon-data-consumer-alpine-graalvm:0.0.1"
+        command: ["java"]
+        args: ["-jar", "-Xmx1024m", "/tmp/data-consumer.jar", "2"]
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 9999
+        - containerPort: 50051
+        resources:
+          limits:
+            cpu: 2
+            memory: 1Gi
+      restartPolicy: Always
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: data-consumer-graalvm-decryption
+spec:
+  type: ClusterIP
+  ports:
+  - name: prometheus
+    port: 9999
+  - name: grpc
+    port: 50051
+  selector:
+    app: data-consumer-graalvm-decryption
+
+---
+
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: data-consumer-graalvm-decryption
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: data-consumer-graalvm-decryption
+  template:
+    metadata:
+      labels:
+        app: data-consumer-graalvm-decryption
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: hardened
+                operator: NotIn
+                values:
+                - "true"
+      securityContext:
+        runAsUser: 65534
+      containers:
+      - name: data-consumer-graalvm-decryption
+        image: "wharf.gaikai.org/lbachmann/hackathon-data-consumer-alpine-graalvm:0.0.1"
+        command: ["java"]
+        args: ["-jar", "-Xmx1024m", "/tmp/data-consumer.jar", "3"]
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 9999

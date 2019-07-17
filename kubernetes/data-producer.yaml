@@ -25,7 +25,7 @@ spec:
       - name: data-producer
         image: "wharf.gaikai.org/lbachmann/hackathon-data-producer-gentoo-jvm:0.0.1"
         command: ["java"]
-        args: ["-jar", "-Xmx512m", "/tmp/data-producer.jar", "data-consumer-jvm", "data-consumer-graalvm"]
+        args: ["-jar", "-Xmx512m", "/tmp/data-producer.jar", "data-consumer-jvm-streaming", "data-consumer-jvm-decryption", "data-consumer-jvm-objectify", "data-consumer-graalvm-streaming", "data-consumer-graalvm-decryption", "data-consumer-graalvm-objectify"]
         imagePullPolicy: IfNotPresent
         resources:
           limits:
