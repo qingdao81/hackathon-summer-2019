@@ -24,17 +24,16 @@ public class Processor {
       .name("streaming_Histogram_seconds").help("duration of streaming test").register();
 
   static int[] values = new int[1000000];
-
   {
     for (int i = 0; i < 1000000; i++) {
       values[i] = i;
     }
   }
 
-   private void processAESRequest(String data) {
+   public void processCrypto(String data) {
      Histogram.Timer requestTimer = useAES_Duration_Histogram.startTimer();
      try {
-         useAES(data);
+       crypto(data);
      } catch (Exception e) {
        LOGGER.info("Encryption failed: " + e.getMessage());
      } finally {
@@ -43,7 +42,7 @@ public class Processor {
      }
    }
 
-  private void processObjectifyStringRequest(String data) {
+  public void processObjectify(String data) {
     Histogram.Timer requestTimer = objectifyString_Duration_Histogram.startTimer();
     try {
         objectify_String(data);
@@ -55,8 +54,7 @@ public class Processor {
     }
   }
 
-  private void processStreaming(String data) {
-
+  public void processStreaming(String data) {
     Histogram.Timer requestTimer = streamingHistogram.startTimer();
     try {
       Arrays.stream(values)
@@ -69,18 +67,7 @@ public class Processor {
     }
   }
 
-  public void processData(String data, int method) {
-
-    if(method == Consumer.METHOD_STRINGIFY){
-      processObjectifyStringRequest(data);
-    } else if (method == Consumer.METHOD_STREAMING){
-      processStreaming(data);
-    } else if(method == Consumer.METHOD_CRYPTO){
-      processAESRequest(data);
-    }    
-  }
-
-  private void useAES(String data) throws Exception{
+  private void crypto(String data) throws Exception{
     Cryptor cryptor = new Cryptor();
     byte[] key = cryptor.getKey();
     byte[] encoded = cryptor.encrypt(data.getBytes("UTF-8"), new String(key, "UTF-8"));

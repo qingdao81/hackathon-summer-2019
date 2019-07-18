@@ -16,14 +16,11 @@ public class GrpcServer {
   private static final Counter GRPC_REQUESTS = Counter.build()
       .name("grpc_requests_total").help("Grpc total requests.").register();
 
-  private int method = -1;
-
   public GrpcServer(int port, Processor processor, int method) throws IOException {
     ServerBuilder.forPort(port)
         .addService(new DataServiceImpl(processor, method))
         .build()
         .start();
-    this.method = method;
     LOGGER.info("Grpc server started, listening on " + port);
   }
 
@@ -40,7 +37,18 @@ public class GrpcServer {
 
     @Override
     public void sendData(DataRequest request, StreamObserver<DataResponse> responseObserver) {
-      processor.processData(request.getData(), method);
+      String data = request.getData();
+      switch (method) {
+        case Consumer.METHOD_OBJECTIFY:
+          processor.processObjectify(data);
+          break;
+        case Consumer.METHOD_STREAMING:
+          processor.processStreaming(data);
+          break;
+        case Consumer.METHOD_CRYPTO:
+          processor.processCrypto(data);
+          break;
+      }
       DataResponse response = DataResponse.newBuilder().setMessage("done").build();
       responseObserver.onNext(response);
       responseObserver.onCompleted();

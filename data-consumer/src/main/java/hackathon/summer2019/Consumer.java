@@ -11,7 +11,7 @@ public class Consumer {
 
   private static final int PROMETHEUS_PORT = 9999;
 
-  static final int METHOD_STRINGIFY = 1;
+  static final int METHOD_OBJECTIFY = 1;
   static final int METHOD_STREAMING = 2;
   static final int METHOD_CRYPTO = 3;
 
@@ -21,6 +21,14 @@ public class Consumer {
     + "\t\"3\": process data with \"performing Crypto\"\n";
 
   public static void main(String[] args) throws Exception {
+    int method_switch = getMethod(args);
+
+    new GrpcServer(GRPC_PORT, new Processor(), method_switch);
+    LOGGER.info("prometheus server started, listening on " + PROMETHEUS_PORT);
+    new HTTPServer(PROMETHEUS_PORT);
+  }
+
+  private static int getMethod(String[] args) {
     int method_switch = -1;
     try{
       method_switch = Integer.parseInt(args[0]);
@@ -32,13 +40,11 @@ public class Consumer {
       System.exit(-1);
     }
 
-    if (method_switch < METHOD_STRINGIFY || method_switch > METHOD_CRYPTO) {
+    if (method_switch < METHOD_OBJECTIFY || method_switch > METHOD_CRYPTO) {
       LOGGER.info(NO_INPUT_MSG);
       System.exit(-1);
-    } else {
-      GrpcServer grpcServer = new GrpcServer(GRPC_PORT, new Processor(), method_switch);
-      LOGGER.info("prometheus server started, listening on " + PROMETHEUS_PORT);
-      HTTPServer prometheusServer = new HTTPServer(PROMETHEUS_PORT);
     }
+
+    return method_switch;
   }
 }
